@@ -28,7 +28,8 @@
     .append('svg:path')
     .attr('d', path)
     .attr('fill', function(d) {
-       return colorInterpolater(parseInt(d.properties.AnyMethod) / 100)
+      console.log(d.properties.name + d.properties.Year)
+      return colorInterpolater(parseInt(d.properties.AnyMethod) / 100)
     })
     .attr('stroke', 'black')
     .attr('stroke-width', 1)
@@ -40,27 +41,46 @@
   function detailsChart(_data) {
 
     var width = 300;
-    var height = 100;
     var data = _data
+
+    var margin = {
+      top: 40,
+      left: width / 2,
+      right: 5,
+      bottom: 5,
+      between: 6
+    }
 
     var TRAD_METHODS = [
       "AnyTraditionalMethod",
-      "Withdrawal",
       "Rhythm",
+      "Withdrawal",
       "OtherTraditional"
 
     ]
     var MODERN_METHODS = [
       "AnyModernMethod",
-      "Pill"
+      "SterilizationFemale",
+      "SterilizationMale",
+      "Pill",
+      "Injectable",
+      "IUD",
+      "MaleCondom",
+      "VaginalBarrierMethods",
+      "Implant",
+      "OtherModernMethods",
     ]
 
+    var barHeight = 20
+    var height = (barHeight + margin.between) * (TRAD_METHODS.length + MODERN_METHODS.length)
+    console.log(height)
+
     var x = d3.scale.linear()
-      .domain([0, 300])
-      .range([0, width])
+      .domain([0, 100])
+      .range([margin.left, width - margin.right])
 
     var y = d3.scale.ordinal()
-      .rangePoints([0, height], 1)
+      .rangePoints([margin.top, height - margin.bottom], 1)
       .domain(TRAD_METHODS.concat(MODERN_METHODS))
 
     var container = d3.select("#details")
@@ -70,31 +90,85 @@
     container.append("svg")
       .attr("class", "barGraphContainer")
 
+    var data = []
+    var country = ""
+    var contraceptiveUse = 0.0
+
+    var labels = container.select(".barGraphContainer").selectAll(".label")
+        .data(TRAD_METHODS.concat(MODERN_METHODS))
+
+    labels.enter().append("text")
+        .attr("x", margin.left - 5)
+        .attr("y", function(d) {
+          return y(d) + barHeight / 2
+        })
+        .attr("height", barHeight)
+        .attr("width", margin.left)
+        .style("font-size", "11px")
+        .style("text-anchor", "end")
+        .style("dy", ".35em")
+        .text(String)
+
+
     function barGraph() {
 
       var svg = container.select(".barGraphContainer")
-      var selection = svg.selectAll(".bar")
-        .data(data.filter(function(d) {
+
+      var relevantData = data.filter(function(d) {
           return (TRAD_METHODS.indexOf(d.key) !== -1 || MODERN_METHODS.indexOf(d.key) !== -1)
-        }), function(d) { return d.key })
+        })
+
+      var selection = svg.selectAll(".bar")
+        .data(relevantData, function(d) { return d.key })
+
+
+      svg.selectAll(".title").remove()
+      var title = svg
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", 20)
+        .attr("width", width)
+        .attr("height", margin.top - 10)
+        .attr("text-anchor", "middle")
+        .attr("class", "title")
+        .style("font-size", "15px")
+        .text(country)
+
+      var subtitle = svg
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", 30)
+        .attr("width", width)
+        .attr("height", margin.top - 10)
+        .attr("text-anchor", "middle")
+        .attr("class", "title")
+        .style("font-size", "11px")
+        .text("Total percentage using contraceptives: " + contraceptiveUse + "%")
 
       selection.enter().append("rect")
 
       selection
-          .attr("x", 0)
+          .attr("x", margin.left)
           .attr("y", function(d) {
             return y(d.key)
           })
-          .attr("height", 20)
+          .attr("height", barHeight)
           .attr("width", function(d) {
-            return x(d.value)
+            return x(d.value) - margin.left
           })
           .attr("class", "bar")
           .style("fill", function(d) {
             if (TRAD_METHODS.indexOf(d.key) !== -1) {
               return "#FF0000"
             } else {
-              return "#00FF00"
+              return "steelblue"
+            }
+          })
+          .style("fill-opacity", function(d) {
+            if (d.key === "AnyTraditionalMethod" || d.key === "AnyModernMethod") {
+              return 0.8
+            } else {
+              return 0.2
             }
           })
 
@@ -105,6 +179,13 @@
     barGraph.data = function(_data) {
       if (!arguments.length) return data;
       data = _data
+      data.forEach(function(d) {
+        if (d.key === "name") {
+          country = d.value
+        } else if (d.key === "AnyMethod") {
+          contraceptiveUse = d.value
+        }
+      })
       return barGraph
     }
 

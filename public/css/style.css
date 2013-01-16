@@ -1,9 +1,21 @@
 #map_container {
   width: 800px;
-  height: 500px;
+  height: 360px;
+  float: left;
+  border: 1px rgb(10, 10, 10) solid;
 }
 
 #details {
   width: 300px;
   height: 300px;
+  float: left;
+}
+
+#content {
+  width: 1200px;
+}
+
+.bar {
+  stroke: #999;
+  stroke-width: 1px;
 }
