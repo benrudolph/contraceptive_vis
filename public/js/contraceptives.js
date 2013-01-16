@@ -63,20 +63,23 @@
       .style("fill", function(d, i) {
         return colorInterpolater(i / 100)
       })
+      .style("stroke", function(d, i) {
+        return colorInterpolater(i / 100)
+      })
 
 
 
   function detailsChart(_data) {
 
-    var width = 370;
+    var width = 470;
     var data = _data
 
     var margin = {
-      top: 40,
+      top: 60,
       left: width / 2,
       right: 5,
-      bottom: 5,
-      between: 6
+      bottom: 20,
+      between: 9
     }
 
     var TRAD_METHODS = [
@@ -100,7 +103,7 @@
       "OtherModernMethods",
     ]
 
-    var barHeight = 20
+    var barHeight = 27
     var height = (barHeight + margin.between) * (TRAD_METHODS.length + MODERN_METHODS.length)
     console.log(height)
 
@@ -124,19 +127,27 @@
     var contraceptiveUse = 0.0
     var year = ""
 
+    container.append("text")
+      .attr("x", width / 2)
+      .attr("y", height + 30)
+      .attr("height", 20)
+      .attr("width", width)
+      .attr("text-anchor", "middle")
+      .style("font-size", "15px")
+      .text("Red denotes traditional methods; blue denotes modern methods")
+
     var labels = container.select(".barGraphContainer").selectAll(".label")
         .data(TRAD_METHODS.concat(MODERN_METHODS))
 
     labels.enter().append("text")
         .attr("x", margin.left - 5)
         .attr("y", function(d) {
-          return y(d) + barHeight / 2
+          return y(d) + (barHeight / 2) + 5
         })
         .attr("height", barHeight)
         .attr("width", margin.left)
-        .style("font-size", "14px")
+        .style("font-size", "20px")
         .style("text-anchor", "end")
-        .style("dy", ".35em")
         .text(String)
 
     function barGraph() {
@@ -165,18 +176,18 @@
         .attr("height", margin.top - 10)
         .attr("text-anchor", "middle")
         .attr("class", "title")
-        .style("font-size", "20px")
+        .style("font-size", "25px")
         .text(country + " | " + year)
 
       var subtitle = svg
         .append("text")
         .attr("x", width / 2)
-        .attr("y", 35)
+        .attr("y", 43)
         .attr("width", width)
         .attr("height", margin.top - 10)
         .attr("text-anchor", "middle")
         .attr("class", "title")
-        .style("font-size", "14px")
+        .style("font-size", "20px")
         .text("Total percentage using contraceptives: " + contraceptiveUse + "%")
 
       dataLabels.enter().append("text")
@@ -192,7 +203,7 @@
           .attr("width", 20)
           .attr("class", "data-label")
           .attr("text-anchor", "start")
-          .style("font-size", "14px")
+          .style("font-size", "20px")
           .text(function(d) { if (d.value) { return d.value + "%" } })
 
       selection.enter().append("rect")
@@ -218,7 +229,7 @@
             if (d.key === "AnyTraditionalMethod" || d.key === "AnyModernMethod") {
               return 0.8
             } else {
-              return 0.2
+              return 0.3
             }
           })
 
