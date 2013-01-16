@@ -1,4 +1,4 @@
-(function(window) {
+(function (window) {
   var data,
       xy = d3
             .geo
@@ -18,29 +18,57 @@
                     .append('svg:g')
                     .attr('id', 'countries');
 
-  var colorInterpolater = d3.interpolateHsl("#FFFFFF", "#000000")
+  var colorInterpolater = d3.interpolateHsl("#FFFFFF", "#00742a")
   var details = detailsChart()
 
   /* World Map */
   countries.selectAll('path')
-    .data(window.countries_data.features)
-    .enter()
-    .append('svg:path')
-    .attr('d', path)
-    .attr('fill', function(d) {
-      console.log(d.properties.name + d.properties.Year)
-      return colorInterpolater(parseInt(d.properties.AnyMethod) / 100)
-    })
-    .attr('stroke', 'black')
-    .attr('stroke-width', 1)
-    .on("mouseover", function(d) {
-      details.data(d3.entries(d.properties))
-      details()
-    })
+      .data(window.countries_data.features)
+      .enter()
+      .append('svg:path')
+      .attr('d', path)
+      .attr('fill', function(d) {
+        if (d.properties.AnyMethod) {
+          return colorInterpolater(parseInt(d.properties.AnyMethod) / 100)
+        }
+        return "black"
+      })
+      .attr('stroke', 'black')
+      .attr('stroke-width', 1)
+      .on("mouseover", function(d) {
+        d3.select(this).classed("over", true)
+        details.data(d3.entries(d.properties))
+        details()
+      })
+      .on("mouseout", function(d) {
+        d3.select(this).classed("over", false)
+      })
+
+  var gradientWidth = 200
+
+  var gradient = d3.select(".gradient .gradient-box")
+      .append("svg")
+      .attr("width", gradientWidth)
+      .attr("height", 40)
+      .selectAll("rect")
+      .data(new Array(100))
+      .enter()
+      .append("rect")
+      .attr("height", 40)
+      .attr("width", gradientWidth / 100)
+      .attr("x", function(d, i) {
+        return i * (gradientWidth / 100)
+      })
+      .attr("y", 0)
+      .style("fill", function(d, i) {
+        return colorInterpolater(i / 100)
+      })
+
+
 
   function detailsChart(_data) {
 
-    var width = 300;
+    var width = 370;
     var data = _data
 
     var margin = {
@@ -59,6 +87,7 @@
 
     ]
     var MODERN_METHODS = [
+      "",
       "AnyModernMethod",
       "SterilizationFemale",
       "SterilizationMale",
@@ -93,6 +122,7 @@
     var data = []
     var country = ""
     var contraceptiveUse = 0.0
+    var year = ""
 
     var labels = container.select(".barGraphContainer").selectAll(".label")
         .data(TRAD_METHODS.concat(MODERN_METHODS))
@@ -104,11 +134,10 @@
         })
         .attr("height", barHeight)
         .attr("width", margin.left)
-        .style("font-size", "11px")
+        .style("font-size", "14px")
         .style("text-anchor", "end")
         .style("dy", ".35em")
         .text(String)
-
 
     function barGraph() {
 
@@ -121,6 +150,11 @@
       var selection = svg.selectAll(".bar")
         .data(relevantData, function(d) { return d.key })
 
+      var dataLabels = svg.selectAll(".data-label")
+        .data(relevantData.filter(function(d) {
+          return (d.key === "AnyTraditionalMethod" || d.key=== "AnyModernMethod")
+        }))
+
 
       svg.selectAll(".title").remove()
       var title = svg
@@ -131,19 +165,35 @@
         .attr("height", margin.top - 10)
         .attr("text-anchor", "middle")
         .attr("class", "title")
-        .style("font-size", "15px")
-        .text(country)
+        .style("font-size", "20px")
+        .text(country + " | " + year)
 
       var subtitle = svg
         .append("text")
         .attr("x", width / 2)
-        .attr("y", 30)
+        .attr("y", 35)
         .attr("width", width)
         .attr("height", margin.top - 10)
         .attr("text-anchor", "middle")
         .attr("class", "title")
-        .style("font-size", "11px")
+        .style("font-size", "14px")
         .text("Total percentage using contraceptives: " + contraceptiveUse + "%")
+
+      dataLabels.enter().append("text")
+
+      dataLabels
+          .attr("x", function(d) {
+            return x(d.value) + 3
+          })
+          .attr("y", function(d) {
+            return y(d.key) + (barHeight / 2) + 5
+          })
+          .attr("height", barHeight)
+          .attr("width", 20)
+          .attr("class", "data-label")
+          .attr("text-anchor", "start")
+          .style("font-size", "14px")
+          .text(function(d) { if (d.value) { return d.value + "%" } })
 
       selection.enter().append("rect")
 
@@ -174,6 +224,9 @@
 
       selection.exit()
         .remove()
+
+      dataLabels.exit()
+        .remove()
     }
 
     barGraph.data = function(_data) {
@@ -184,6 +237,8 @@
           country = d.value
         } else if (d.key === "AnyMethod") {
           contraceptiveUse = d.value
+        } else if (d.key === "Year") {
+          year = d.value
         }
       })
       return barGraph

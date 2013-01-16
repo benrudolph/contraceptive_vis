@@ -7,9 +7,26 @@
   </head>
   <body>
     <div id="content">
-     <div id="map_container"></div>
-     <div id="details"></div>
+      <h1>Contraceptive use among women aged 15 - 49</h1>
+      <div class="column main">
+        <div id="map_container"></div>
+        <div id="legend">
+          <div class="gradient">
+            <span>Low % use</span>
+            <div class="gradient-box"></div>
+            <span>High % use</span>
+          </div>
+        </div>
+      </div>
+      <div class="column right">
+        <div id="details"></div>
+      </div>
+      <div id="footer">
+        Crafted by: <a href="http://www.benrudolph.com">Ben Rudolph</a>&nbsp;|&nbsp;<a
+          href="http://data.un.org/DocumentData.aspx?id=247">Data Source</a>
+      </div>
     </div>
+
     <script src="lib/d3.v3.min.js"></script>
     <script src="lib/jquery.min.js"></script>
     <script src="data/iso.js"></script>
