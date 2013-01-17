@@ -1,6 +1,6 @@
 #map_container {
-  width: 800px;
-  height: 380px;
+  width: 600px;
+  height: 280px;
   float: left;
   border: 1px rgb(10, 10, 10) solid;
   border-radius: 20px;
@@ -16,7 +16,6 @@ body {
 
 h1 {
   font-weight: 300;
-  font-size: 40px;
 }
 
 .column {
@@ -24,11 +23,11 @@ h1 {
 }
 
 .main {
-  width: 800px;
+  width: 600px;
 }
 
 .right {
-  width: 470px;
+  width: 370px;
 }
 
 #footer {
@@ -41,7 +40,7 @@ h1 {
 
 #legend {
   float: left;
-  width: 800px;
+  width: 600px;
   background-color: white;
   border-radius: 20px;
   border: 1px solid rgb(10, 10, 10);
@@ -52,15 +51,15 @@ h1 {
   background-color: white;
   border-radius: 20px;
   border: 1px solid rgb(10, 10, 10);
-  width: 470px;
-  height: 590px;
+  width: 370px;
+  height: 440px;
   float: left;
   padding-top: 10px;
   margin-left: 10px;
 }
 
 #content {
-  width: 1300px;
+  width: 1050px;
   margin: auto;
 }
 
@@ -76,13 +75,14 @@ h1 {
 #legend .gradient {
   margin: 15px 10px;
   height: 40px;
-  width: 400px;
+  width: 300px;
   float: left;
 }
 
 #legend .gradient span {
   float: left;
   margin: 5px 3px;
+  font-size: 12px;
 }
 
 #legend .gradient .gradient-box {
@@ -90,7 +90,7 @@ h1 {
 }
 
 #legend p {
-  width: 300px;
+  width: 250px;
   font-size: 10px;
   float: left;
 }

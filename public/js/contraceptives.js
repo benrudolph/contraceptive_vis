@@ -20,7 +20,9 @@
 
   var colorInterpolater = d3.interpolateHsl("#FFFFFF", "#00742a")
   var details = detailsChart()
-
+  details.data(d3.entries(window.countries_data.features[parseInt(Math.random() *
+          window.countries_data.features.length)].properties))
+  details()
   /* World Map */
   countries.selectAll('path')
       .data(window.countries_data.features)
@@ -44,17 +46,17 @@
         d3.select(this).classed("over", false)
       })
 
-  var gradientWidth = 200
+  var gradientWidth = 150
 
   var gradient = d3.select(".gradient .gradient-box")
       .append("svg")
       .attr("width", gradientWidth)
-      .attr("height", 40)
+      .attr("height", 30)
       .selectAll("rect")
       .data(new Array(100))
       .enter()
       .append("rect")
-      .attr("height", 40)
+      .attr("height", 30)
       .attr("width", gradientWidth / 100)
       .attr("x", function(d, i) {
         return i * (gradientWidth / 100)
@@ -71,15 +73,15 @@
 
   function detailsChart(_data) {
 
-    var width = 470;
+    var width = 370;
     var data = _data
 
     var margin = {
-      top: 60,
+      top: 40,
       left: width / 2,
       right: 5,
-      bottom: 20,
-      between: 9
+      bottom: 5,
+      between: 6
     }
 
     var TRAD_METHODS = [
@@ -103,7 +105,7 @@
       "OtherModernMethods",
     ]
 
-    var barHeight = 27
+    var barHeight = 20
     var height = (barHeight + margin.between) * (TRAD_METHODS.length + MODERN_METHODS.length)
     console.log(height)
 
@@ -129,11 +131,11 @@
 
     container.append("text")
       .attr("x", width / 2)
-      .attr("y", height + 30)
+      .attr("y", height + 20)
       .attr("height", 20)
       .attr("width", width)
       .attr("text-anchor", "middle")
-      .style("font-size", "15px")
+      .style("font-size", "12px")
       .text("Red denotes traditional methods; blue denotes modern methods")
 
     var labels = container.select(".barGraphContainer").selectAll(".label")
@@ -142,12 +144,13 @@
     labels.enter().append("text")
         .attr("x", margin.left - 5)
         .attr("y", function(d) {
-          return y(d) + (barHeight / 2) + 5
+          return y(d) + barHeight / 2
         })
         .attr("height", barHeight)
         .attr("width", margin.left)
-        .style("font-size", "20px")
+        .style("font-size", "12px")
         .style("text-anchor", "end")
+        .style("dy", ".35em")
         .text(String)
 
     function barGraph() {
@@ -176,18 +179,18 @@
         .attr("height", margin.top - 10)
         .attr("text-anchor", "middle")
         .attr("class", "title")
-        .style("font-size", "25px")
+        .style("font-size", "16px")
         .text(country + " | " + year)
 
       var subtitle = svg
         .append("text")
         .attr("x", width / 2)
-        .attr("y", 43)
+        .attr("y", 35)
         .attr("width", width)
         .attr("height", margin.top - 10)
         .attr("text-anchor", "middle")
         .attr("class", "title")
-        .style("font-size", "20px")
+        .style("font-size", "13px")
         .text("Total percentage using contraceptives: " + contraceptiveUse + "%")
 
       dataLabels.enter().append("text")
@@ -203,7 +206,7 @@
           .attr("width", 20)
           .attr("class", "data-label")
           .attr("text-anchor", "start")
-          .style("font-size", "20px")
+          .style("font-size", "12px")
           .text(function(d) { if (d.value) { return d.value + "%" } })
 
       selection.enter().append("rect")
