@@ -12,6 +12,8 @@
       svg = d3
               .select('#map_container')
               .append('svg:svg')
+              .attr("width", 600)
+              .attr("height", 280)
               .call(d3.behavior.zoom().on("zoom", redraw))
               .append("svg:g"),
       countries = svg
@@ -119,9 +121,13 @@
 
     var container = d3.select("#details")
       .append("svg")
+      .attr("width", width)
+      .attr("height", height + 20)
       .attr("class", "detailsContainer")
 
     container.append("svg")
+      .attr("width", width)
+      .attr("height", height + 20)
       .attr("class", "barGraphContainer")
 
     var data = []
